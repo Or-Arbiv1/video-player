@@ -1,0 +1,26 @@
+:root {
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  background: #f4f6fb;
+  font-family: 'Rubik', system-ui, sans-serif;
+}
+
+/* Center the player on the page (the Figma board is a light-framed presentation). */
+.app {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}

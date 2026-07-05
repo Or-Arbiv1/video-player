@@ -1,0 +1,91 @@
+.root {
+  position: relative;
+  display: inline-flex;
+}
+
+.gear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 31px;
+  height: 31px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--vp-fg);
+  cursor: pointer;
+  border-radius: 4px;
+  opacity: 0.92;
+  transition: opacity 0.12s ease, transform 0.12s ease;
+}
+
+.gear:hover,
+.gear:focus-visible,
+.gear[aria-expanded='true'] {
+  opacity: 1;
+  transform: scale(1.06);
+  outline: none;
+}
+
+.icon {
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+}
+
+.icon :global(svg) {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+
+/* Popover anchored above the gear. */
+.popover {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 0;
+  min-width: 160px;
+  padding: 6px;
+  background: var(--vp-tooltip-bg);
+  color: var(--vp-tooltip-fg);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--vp-font);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  background: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1;
+  text-align: left;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.row:hover,
+.row:focus-visible {
+  background: rgba(255, 255, 255, 0.12);
+  outline: none;
+}
+
+.rowSelected {
+  color: var(--vp-accent);
+  font-weight: 500;
+}
+
+.check {
+  display: inline-flex;
+  width: 12px;
+  justify-content: center;
+}

@@ -1,0 +1,62 @@
+/* Button row: two clusters, space-between (figma.md §10). */
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cluster {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* 31×31 hit target around a 24px glyph (figma.md §2). */
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 31px;
+  height: 31px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--vp-fg);
+  cursor: pointer;
+  border-radius: 4px;
+  opacity: 0.92;
+  transition: opacity 0.12s ease, transform 0.12s ease;
+}
+
+button.iconBtn:hover,
+button.iconBtn:focus-visible {
+  opacity: 1;
+  transform: scale(1.06);
+  outline: none;
+}
+
+/* The inline-SVG wrapper renders a 24px glyph. */
+.icon {
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+}
+
+.icon :global(svg) {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+
+/* Time display: Rubik 18px/28, white, right-aligned (figma.md §10). */
+.time {
+  font-family: var(--vp-font);
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 400;
+  color: var(--vp-fg);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  margin-left: 4px;
+}

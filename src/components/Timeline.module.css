@@ -1,0 +1,115 @@
+.timeline {
+  position: relative;
+  width: 100%;
+  padding: 8px 0; /* vertical hit area around the 4px track */
+}
+
+/* The interactive track. Height grows on hover so the knob/segments enlarge. */
+.track {
+  position: relative;
+  width: 100%;
+  height: var(--vp-track-h);
+  cursor: pointer;
+  outline: none;
+}
+
+/* Base chapter segment (#8B8EA4), radius 1px. Positioned by % of duration. */
+.segment {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background: var(--vp-track);
+  border-radius: 1px;
+}
+
+.buffered {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: rgba(246, 249, 255, 0.35);
+  border-radius: 1px;
+}
+
+/* Played overlay (#F6F9FF), 0 → currentTime. */
+.played {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: var(--vp-played);
+  border-radius: 1px;
+}
+
+/* Hover accent (#76A4F9) — recolors the single hovered chapter, above the played overlay. */
+.hoverAccent {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background: var(--vp-accent);
+  border-radius: 1px;
+  pointer-events: none;
+}
+
+/* Scrubber knob 4×18 (#F6F9FF), centered on currentTime, riding above the track. */
+.knob {
+  position: absolute;
+  top: 50%;
+  width: 4px;
+  height: 18px;
+  border-radius: 2px;
+  background: var(--vp-played);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition: height 0.1s ease;
+}
+
+.track:hover .knob {
+  height: 22px;
+}
+
+/* Hover tooltip (figma.md §4): dark rounded box, two centered Rubik lines + down pointer. */
+.tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  max-width: 240px;
+  padding: 8px;
+  background: var(--vp-tooltip-bg);
+  color: var(--vp-tooltip-fg);
+  border-radius: 6px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.09);
+  text-align: center;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.tooltipTitle {
+  font-size: 12px;
+  line-height: 14.2px;
+  font-weight: 400;
+}
+
+.tooltipTime {
+  font-size: 12px;
+  line-height: 14.2px;
+  font-weight: 400;
+  opacity: 0.85;
+}
+
+/* Downward pointer centered under the box. */
+.tooltipArrow {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid var(--vp-tooltip-bg);
+}
