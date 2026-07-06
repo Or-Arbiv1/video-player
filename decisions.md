@@ -282,31 +282,6 @@ tests/                       # Vitest, pure-unit, one file per requirement (npm 
 
 ---
 
-## Learnings (discovered while building)
-
-> **Convention:** anything we discover *during* the build — from the HLS stream, hls.js, the
-> browser, or testing — gets recorded here (dated), not just fixed silently. This is the
-> running log so the README write-up and future decisions have a paper trail.
-
-- **2026-07-05 — Real HLS levels of the test stream.** Fetched the master playlist
-  (`.../b87ac5f4-…/playlist.m3u8`). Variants exposed: **240p (426×240), 360p (640×360),
-  480p (854×480), 720p (1280×720)** — **no 1080p**. So:
-  - The quality menu must be built from `hls.levels`; a hardcoded `1080p` entry would be a
-    dead option for this input. (See decision #5 / #5b.)
-  - Order the menu by height descending + an **Auto** entry on top.
-- **hls.js API (confirmed while building §5):** levels come from `hls.levels[i].height` /
-  `.bitrate` after `Hls.Events.MANIFEST_PARSED`; selecting a level = `hls.currentLevel = id`
-  (`-1` = Auto/ABR). Menu is built there and sorted by height descending with an Auto entry on
-  top. Native-HLS (Safari) is detected via `Hls.isSupported()` + `canPlayType('application/
-  vnd.apple.mpegurl')`; there we set `video.src` directly and hide the gear (no manual levels).
-- **2026-07-05 — "Auto" wasn't staying selected.** We initially listened to
-  `Hls.Events.LEVEL_SWITCHED` and, while `hls.autoLevelEnabled`, wrote the ABR-resolved level
-  index back into `currentLevel` (intending to *show* the active height). But `currentLevel`
-  also drives the menu checkmark, so picking **Auto** immediately re-checked whatever rendition
-  ABR resolved to (e.g. 720p). **Fix:** removed the `LEVEL_SWITCHED` handler — `currentLevel`
-  now reflects the **user's** choice only. Lesson: don't overload one value for "what the user
-  picked" and "what's playing." Showing the live ABR height would need a separate state.
-
 ## Resolved from Figma (extracted 2026-07-05)
 
 - ✅ **Build target = the full `Video player` frame (`1:243`)** with **all icons** (play,

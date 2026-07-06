@@ -34,11 +34,7 @@ npm install
 npm run dev       # start the dev server → http://localhost:5173
 ```
 
-Other scripts:
 
-```bash
-npm run build     # type-check (tsc) + production build to dist/
-npm run preview   # serve the production build locally
 ```
 
 The player reads its input (`hlsPlaylistUrl`, `videoLength`, `chapters`) from
