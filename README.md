@@ -17,6 +17,11 @@ hovered chapter name; clicking seeks; and the resolution can be changed from the
   actual quality levels (`hls.levels`) plus an **Auto** (ABR) option.
 - **Chapters on the timeline** — YouTube-style segments with 4px gaps, sized to each
   chapter's share of the video.
+- **Error handling** — every failure surface shows a message instead of failing silently:
+  fatal HLS errors, native-Safari playback errors, a rejected `play()` or fullscreen call,
+  and uncaught render errors (via an app-level error boundary). Streaming/playback
+  failures block the frame with a "refresh the page" message; a denied fullscreen request
+  (playback is unaffected) gets a small non-blocking toast instead. See `decisions.md` #13.
 - **Timeline interaction**
   - **Hover** → tooltip showing the hovered time (`mm:ss`) and the chapter name at that point;
     the hovered chapter segment highlights in periwinkle blue.
@@ -75,6 +80,11 @@ per requirement: the resolution menu (#3), chapter segments (#4), and hover/seek
   see `decisions.md #5`).
 - **Icons are the exact Figma exports** (`src/components/icons/*.svg`), imported inline via
   Vite's `?raw` so they inherit `currentColor` for the white fill and hover states.
+- **Every failure surfaces a message, sized to its severity.** Streaming/playback failures
+  (fatal HLS errors, native-Safari `<video>` errors, a rejected `play()`) block the frame
+  with a "refresh the page" banner, since the player is genuinely broken. A denied
+  fullscreen request doesn't break playback, so it only gets a small non-blocking toast.
+  An app-level error boundary catches uncaught render errors. See `decisions.md #13`.
 
 ### Challenge
 
@@ -109,6 +119,7 @@ src/
 │  ├─ Controls.tsx         play/pause · volume · time · … · settings · fullscreen
 │  ├─ VolumeControl.tsx    mute toggle + hover-reveal 0–100% slider
 │  ├─ SettingsMenu.tsx     flat resolution (quality) popover from hls.levels
+│  ├─ ErrorBoundary.tsx    catches uncaught render errors app-wide (wraps <App/> in main.tsx)
 │  └─ icons/               Figma SVG exports + inline Icon wrapper (+ hand-drawn pause/volume-muted)
 ├─ hooks/
 │  ├─ useHls.ts            hls.js lifecycle + quality switching (level math → utils/levels.ts)
