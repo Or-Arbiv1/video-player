@@ -20,7 +20,7 @@ interface HoverInfo {
 
 /**
  * Timeline (figma.md §3, requirements #4 & #5). Built as stacked layers so playback
- * (time-driven) and hover (pointer-driven) stay decoupled (decisions.md #4c):
+ * (time-driven) and hover (pointer-driven) stay decoupled (decisions.md #4):
  *   1. base chapter segments (#8B8EA4, 4px gaps)
  *   2. played overlay (#F6F9FF, 0 → currentTime)
  *   3. hover accent (#76A4F9) recoloring the single hovered segment
@@ -53,7 +53,7 @@ export function Timeline({ spans, duration, currentTime, buffered, onSeek }: Tim
   const playedPct = timeToPct(currentTime, duration) * 100;
   const bufferedPct = timeToPct(buffered, duration) * 100;
 
-  // Clamp the tooltip so it never overflows the track edges (decisions.md #7).
+  // Clamp the tooltip so it never overflows the track edges (decisions.md #4).
   let tooltipLeft = hover?.x ?? 0;
   if (hover && trackRef.current) {
     const trackW = trackRef.current.getBoundingClientRect().width;

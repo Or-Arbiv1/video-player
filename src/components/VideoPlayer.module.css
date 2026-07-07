@@ -24,6 +24,17 @@
   user-select: none;
 }
 
+/* Requesting fullscreen on .player (not <video>) keeps the timeline/controls overlay
+   visible (figma.md §7). Without this override the UA keeps our 960px max-width/aspect-
+   ratio and just letterboxes the same small player in the middle of a black screen. */
+.player:fullscreen,
+.player:-webkit-full-screen {
+  max-width: none;
+  width: 100vw;
+  height: 100vh;
+  aspect-ratio: auto;
+}
+
 .video {
   position: absolute;
   inset: 0;

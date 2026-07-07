@@ -2,23 +2,39 @@ import type { QualityLevel } from '../types';
 import { formatTime } from '../utils/time';
 import { Icon } from './icons/Icon';
 import { SettingsMenu } from './SettingsMenu';
+import { VolumeControl } from './VolumeControl';
 import styles from './Controls.module.css';
 
 interface ControlsProps {
+  currentTime: number;
   duration: number;
-  /** Quality levels for the settings menu; empty hides the gear (e.g. native HLS). */
+  paused: boolean;
+  volume: number;
+  muted: boolean;
+  onSetVolume: (v: number) => void;
+  onToggleMute: () => void;
   qualityLevels: QualityLevel[];
   currentLevel: number;
   onSelectLevel: (id: number) => void;
-  onPlay: () => void;
+  onToggle: () => void;
+  isFullscreen: boolean;
+  onToggleFullscreen: () => void;
 }
 
 export function Controls({
+  currentTime,
   duration,
+  paused,
+  volume,
+  muted,
+  onSetVolume,
+  onToggleMute,
   qualityLevels,
   currentLevel,
   onSelectLevel,
-  onPlay,
+  onToggle,
+  isFullscreen,
+  onToggleFullscreen,
 }: ControlsProps) {
   return (
     <div className={styles.bar}>
@@ -26,21 +42,21 @@ export function Controls({
         <button
           type="button"
           className={styles.iconBtn}
-          onClick={onPlay}
-          aria-label="Play"
+          onClick={onToggle}
+          aria-label={paused ? 'Play' : 'Pause'}
         >
-          <Icon name="play" className={styles.icon} />
+          <Icon name={paused ? 'play' : 'pause'} className={styles.icon} />
         </button>
 
-        {/* Display-only per the brief (figma.md §8) — rendered to match Figma, not wired. */}
-        <span className={styles.iconBtn} aria-hidden="true">
-          <Icon name="volume" className={styles.icon} />
-        </span>
+        <VolumeControl
+          volume={volume}
+          muted={muted}
+          onSetVolume={onSetVolume}
+          onToggleMute={onToggleMute}
+        />
 
-        {/* Current time is pinned to 0:00 to match the Figma design; the timeline
-            knob still tracks live playback (currentTime flows straight to <Timeline>). */}
         <span className={styles.time}>
-          {formatTime(0)} / {formatTime(duration)}
+          {formatTime(currentTime)} / {formatTime(duration)}
         </span>
       </div>
 
@@ -49,10 +65,14 @@ export function Controls({
           <SettingsMenu levels={qualityLevels} current={currentLevel} onSelect={onSelectLevel} />
         )}
 
-        {/* Display-only per the brief (figma.md §7). */}
-        <span className={styles.iconBtn} aria-hidden="true">
+        <button
+          type="button"
+          className={styles.iconBtn}
+          onClick={onToggleFullscreen}
+          aria-label={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+        >
           <Icon name="fullscreen" className={styles.icon} />
-        </span>
+        </button>
       </div>
     </div>
   );

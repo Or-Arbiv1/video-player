@@ -22,8 +22,14 @@ hovered chapter name; clicking seeks; and the resolution can be changed from the
     the hovered chapter segment highlights in periwinkle blue.
   - **Click** → seeks the video to that time.
 
-Per the brief, the **volume** and **fullscreen** icons are rendered to match Figma but are
-display-only (not wired).
+Every control is fully wired. **Play/pause** — the play button (and clicking the video)
+toggles playback, swapping between the Figma play icon and a hand-drawn pause icon in the
+same style. **Volume** — click the speaker to mute/unmute; hover (or focus) reveals a
+vertical 0–100% slider; un-muting restores the last level rather than staying silent.
+**Fullscreen** — toggles the Fullscreen API on the player container so the controls stay
+usable; it keeps the single Figma fullscreen icon in both states (no good "exit" glyph to
+swap to) and communicates state via `aria-label` instead. Fullscreen isn't supported on iOS
+Safari (no arbitrary-container Fullscreen API there).
 
 ## Setup & run
 
@@ -66,7 +72,7 @@ per requirement: the resolution menu (#3), chapter segments (#4), and hover/seek
 - **The quality menu is 100% dynamic.** Levels come from `hls.levels` — nothing is hardcoded.
   The menu itself is a **flat, quality-specific list** — we deliberately didn't build a generic
   settings-descriptor abstraction, since resolution is the only setting the brief needs (YAGNI;
-  see `decisions.md #5b`).
+  see `decisions.md #5`).
 - **Icons are the exact Figma exports** (`src/components/icons/*.svg`), imported inline via
   Vite's `?raw` so they inherit `currentColor` for the white fill and hover states.
 
@@ -100,12 +106,14 @@ src/
 ├─ components/
 │  ├─ VideoPlayer.tsx      owns <video> ref + state, wires hls, lays out UI
 │  ├─ Timeline.tsx         3-layer track, chapter segments, hover tooltip, click-to-seek
-│  ├─ Controls.tsx         play · volume · time · … · settings · fullscreen
+│  ├─ Controls.tsx         play/pause · volume · time · … · settings · fullscreen
+│  ├─ VolumeControl.tsx    mute toggle + hover-reveal 0–100% slider
 │  ├─ SettingsMenu.tsx     flat resolution (quality) popover from hls.levels
-│  └─ icons/               Figma SVG exports + inline Icon wrapper
+│  └─ icons/               Figma SVG exports + inline Icon wrapper (+ hand-drawn pause/volume-muted)
 ├─ hooks/
 │  ├─ useHls.ts            hls.js lifecycle + quality switching (level math → utils/levels.ts)
-│  └─ usePlayerState.ts    subscribes to <video> events → reactive state
+│  ├─ usePlayerState.ts    subscribes to <video> events → reactive state
+│  └─ useFullscreen.ts     Fullscreen API on the player container + fullscreenchange sync
 └─ utils/
    ├─ time.ts              timeToPct, formatTime, buildChapterSpans, chapterAt
    └─ levels.ts            AUTO_LEVEL, buildQualityLevels (resolution-menu math)

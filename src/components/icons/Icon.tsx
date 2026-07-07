@@ -4,13 +4,17 @@
  * and hover states. We do not redraw them in JSX — these are the exact Figma assets.
  */
 import playSvg from './play.svg?raw';
+import pauseSvg from './pause.svg?raw';
 import volumeSvg from './volume.svg?raw';
+import volumeMutedSvg from './volume-muted.svg?raw';
 import settingsSvg from './settings.svg?raw';
 import fullscreenSvg from './fullscreen.svg?raw';
 
 const SVGS = {
   play: playSvg,
+  pause: pauseSvg,
   volume: volumeSvg,
+  volumeMuted: volumeMutedSvg,
   settings: settingsSvg,
   fullscreen: fullscreenSvg,
 } as const;

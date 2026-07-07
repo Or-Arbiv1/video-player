@@ -29,4 +29,7 @@ export interface PlayerState {
   currentTime: number;
   duration: number;
   buffered: number;
+  paused: boolean;
+  volume: number;
+  muted: boolean;
 }

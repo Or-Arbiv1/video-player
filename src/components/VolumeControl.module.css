@@ -1,0 +1,104 @@
+.root {
+  position: relative;
+  display: inline-flex;
+}
+
+/* 31×31 hit target around a 24px glyph — duplicated from Controls.module.css rather than
+   shared, same as SettingsMenu's .gear (CSS Modules are scoped per component). */
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 31px;
+  height: 31px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--vp-fg);
+  cursor: pointer;
+  border-radius: 4px;
+  opacity: 0.92;
+  transition: opacity 0.12s ease, transform 0.12s ease;
+}
+
+.iconBtn:hover,
+.iconBtn:focus-visible {
+  opacity: 1;
+  transform: scale(1.06);
+  outline: none;
+}
+
+.icon {
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+}
+
+.icon :global(svg) {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+
+/* Anchored directly against the button (bottom: 100%, no gap) so its hit box is
+   contiguous with .iconBtn's — the 8px visual gap lives inside as padding-bottom
+   instead, so hovering from the button up to the slider never crosses dead space
+   that would fire mouseleave on .root and hide the popover mid-hover. */
+.sliderWrap {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding-bottom: 8px;
+  display: flex;
+}
+
+/* The actual visible popover, same shape as SettingsMenu's popover (tooltip-dark box).
+   No Figma spec for the slider itself — figma.md §8 lists it as an optional stretch. */
+.sliderPopover {
+  width: 31px;
+  height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
+  background: var(--vp-tooltip-bg);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+/* A horizontal <input type="range"> rotated -90deg reads as vertical, cross-browser
+   (native vertical-slider support/orientation attrs are inconsistent). */
+.slider {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 68px;
+  height: 4px;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  transform: rotate(-90deg);
+}
+
+.slider::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--vp-played);
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--vp-played);
+  border: none;
+  cursor: pointer;
+}
+
+.slider::-moz-range-track {
+  background: transparent;
+}

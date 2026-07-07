@@ -1,7 +1,7 @@
 import type { Chapter } from '../types';
 
 /**
- * Pure timeline math — no DOM, unit-testable (decisions.md #4).
+ * Pure timeline math — no DOM, unit-testable (decisions.md #3).
  */
 
 /** Clamp `n` into the inclusive range [min, max]. */
@@ -32,7 +32,7 @@ export function formatTime(totalSeconds: number, pad = false): string {
 /**
  * A chapter's effective span is `[start, nextStart)` — the input has 1s gaps between
  * `end` and the next `start`, so we extend each chapter to the next chapter's start
- * (last chapter → `duration`) to avoid holes (decisions.md #3).
+ * (last chapter → `duration`) to avoid holes (decisions.md #2).
  */
 export interface ChapterSpan extends Chapter {
   index: number;
