@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import type { PlayerInput } from '../types';
 import { useHls } from '../hooks/useHls';
 import { usePlayerState } from '../hooks/usePlayerState';
@@ -20,10 +20,13 @@ export function VideoPlayer({ hlsPlaylistUrl, videoLength, chapters }: PlayerInp
   // unmuting into silence (a "volume: 0, muted: false" state that's audibly identical
   // to muted — see decisions.md #8 for why `muted` is kept as the single source of truth).
   const lastVolumeRef = useRef(1);
+  // Surfaces a rejected video.play() (autoplay policy, decode error, etc.) — otherwise
+  // the user clicks play and nothing visibly happens.
+  const [playError, setPlayError] = useState<string | null>(null);
 
   const { levels, currentLevel, setLevel, nativeHls, error } = useHls(videoRef, hlsPlaylistUrl);
   const state = usePlayerState(videoRef);
-  const { isFullscreen, toggle: toggleFullscreen } = useFullscreen(containerRef);
+  const { isFullscreen, toggle: toggleFullscreen, error: fullscreenError } = useFullscreen(containerRef);
 
   // Prefer the real HLS duration once known; fall back to the input's videoLength so the
   // chapter layout renders before metadata loads (decisions.md #1).
@@ -35,8 +38,12 @@ export function VideoPlayer({ hlsPlaylistUrl, videoLength, chapters }: PlayerInp
   const togglePlay = () => {
     const v = videoRef.current;
     if (!v) return;
-    if (v.paused) v.play().catch(() => {});
-    else v.pause();
+    if (v.paused) {
+      setPlayError(null);
+      v.play().catch(() => setPlayError('Playback failed.'));
+    } else {
+      v.pause();
+    }
   };
 
   const seek = (t: number) => {
@@ -69,6 +76,11 @@ export function VideoPlayer({ hlsPlaylistUrl, videoLength, chapters }: PlayerInp
   // can't switch levels manually, so hide the gear there.
   const qualityLevels = nativeHls ? [] : levels;
 
+  // Streaming/play failures break the whole player, so they get a blocking banner with
+  // a "refresh" hint. A denied fullscreen request doesn't — the video keeps playing fine
+  // underneath, so it only gets a small non-blocking toast.
+  const blockingMessage = error ?? playError;
+
   return (
     <div className={styles.player} ref={containerRef}>
       <video
@@ -80,7 +92,18 @@ export function VideoPlayer({ hlsPlaylistUrl, videoLength, chapters }: PlayerInp
 
       <div className={styles.scrim} />
 
-      {error && <div className={styles.error}>{error}</div>}
+      {blockingMessage && (
+        <div className={styles.error}>
+          <div>
+            <p>{blockingMessage}</p>
+            <p>Please refresh the page.</p>
+          </div>
+        </div>
+      )}
+
+      {!blockingMessage && fullscreenError && (
+        <div className={styles.toast}>{fullscreenError}</div>
+      )}
 
       <div className={styles.controlsWrap}>
         <Timeline

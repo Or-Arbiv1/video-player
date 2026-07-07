@@ -41,7 +41,13 @@ export function useHls(
     if (!Hls.isSupported() && video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = src;
       setNativeHls(true);
-      return;
+
+      // hls.js's own error handling (above) doesn't run this path — the native <video>
+      // fires its own 'error' event for network/decode failures, otherwise Safari fails
+      // silently with no feedback at all.
+      const onNativeError = () => setError('Video failed to load.');
+      video.addEventListener('error', onNativeError);
+      return () => video.removeEventListener('error', onNativeError);
     }
 
     if (!Hls.isSupported()) {

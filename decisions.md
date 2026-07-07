@@ -214,3 +214,31 @@ Play/pause, fullscreen, and volume (#6, #7, #8 below) were all built the same wa
       round-trip, clamp, div-by-zero).
     - Scope is deliberately the **pure logic** in `utils/` only — component rendering, real
       DOM pointer events, and the visual Figma match are verified manually.
+
+13. **Error handling covers every failure surface, not just `hls.js`.** Originally only
+    fatal `hls.js` errors surfaced a message (§5 above); everything else failed silently.
+    Added:
+    - **`video.play()` rejection** (autoplay policy, decode error) — `togglePlay` used to
+      swallow the promise (`.catch(() => {})`); now it sets "Playback failed." so a
+      non-responsive play button isn't silent.
+    - **Native HLS (Safari) playback errors** — `hls.js`'s error handling doesn't run on
+      the native `video.src` fallback path, so Safari failures had zero feedback. A
+      `'error'` listener on the `<video>` element itself (in `useHls`'s native branch) now
+      sets "Video failed to load."
+    - **Fullscreen rejection** — `requestFullscreen()`/`exitFullscreen()` can reject (no
+      user gesture, iframe missing `allow="fullscreen"`); `useFullscreen` now exposes an
+      `error` field set from the rejection instead of failing invisibly.
+    - **Uncaught render errors** — a top-level `<ErrorBoundary>` (`main.tsx`, wrapping
+      `<App>`) catches these so the page shows a message instead of going blank.
+    - **Severity decides the UI, not just the presence of an error.** Streaming/play
+      failures break the whole player, so they get the existing blocking `.error` overlay
+      (dark scrim, full frame) plus "Please refresh the page." — refreshing is a real fix
+      there. A denied fullscreen request doesn't break playback (the video keeps playing
+      underneath), so it only gets a small non-blocking `.toast` — reusing the tooltip's
+      dark-box styling without covering the frame, and without the refresh hint, since
+      refreshing won't fix a permissions/gesture problem.
+
+14. **Settings popover closes on `Escape`, not just outside-click.** `<VolumeControl>`
+    already closed on hover/focus-out (#10 above); `<SettingsMenu>` only closed on outside
+    `pointerdown`. Added a `keydown` listener alongside the existing outside-click one so
+    it's dismissable without reaching for the mouse.

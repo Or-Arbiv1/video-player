@@ -1,0 +1,16 @@
+.fallback {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  font-family: 'Rubik', system-ui, sans-serif;
+  color: #1b1b1e;
+}
+
+.fallback p {
+  margin: 0;
+}
+
+.fallback p:first-child {
+  margin-bottom: 4px;
+}

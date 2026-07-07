@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react';
 interface UseFullscreenResult {
   isFullscreen: boolean;
   toggle: () => void;
+  /** Set when requestFullscreen()/exitFullscreen() rejects (e.g. no user-gesture, iframe
+   *  missing `allow="fullscreen"`) — otherwise the button silently does nothing. */
+  error: string | null;
 }
 
 /**
@@ -12,6 +15,7 @@ interface UseFullscreenResult {
  */
 export function useFullscreen(ref: React.RefObject<HTMLElement>): UseFullscreenResult {
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const onChange = () => setIsFullscreen(document.fullscreenElement === ref.current);
@@ -20,12 +24,13 @@ export function useFullscreen(ref: React.RefObject<HTMLElement>): UseFullscreenR
   }, [ref]);
 
   const toggle = () => {
+    setError(null);
     if (document.fullscreenElement) {
-      document.exitFullscreen();
+      document.exitFullscreen().catch(() => setError('Could not exit fullscreen.'));
     } else {
-      ref.current?.requestFullscreen();
+      ref.current?.requestFullscreen().catch(() => setError('Could not enter fullscreen.'));
     }
   };
 
-  return { isFullscreen, toggle };
+  return { isFullscreen, toggle, error };
 }

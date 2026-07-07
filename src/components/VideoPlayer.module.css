@@ -80,3 +80,27 @@
   padding: 16px;
   text-align: center;
 }
+
+.error p {
+  margin: 0;
+}
+
+.error p:first-child {
+  margin-bottom: 4px;
+}
+
+/* Non-blocking notice (e.g. denied fullscreen request) — the video keeps playing
+   underneath, so unlike .error this doesn't cover the frame. */
+.toast {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--vp-tooltip-bg);
+  color: var(--vp-tooltip-fg);
+  font-size: 13px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.09);
+  pointer-events: none;
+}
